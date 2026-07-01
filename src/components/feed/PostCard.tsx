@@ -13,10 +13,7 @@ import CommentModal from "@/components/comment-post/CommentModal";
 import {useBookmarkPost, useUnbookmarkPost} from "@/hooks/useBookmarks";
 
 export default function PostCard({ post }: { post: Post }) {
-  const [bookmarked, setBookmarked] = useState(post.isBookmarked);
   const [expanded, setExpanded] = useState(false);
-  const [liked, setLiked] = useState(post.isLiked);
-  const [likes, setLikes] = useState(post.likeCount);
   const [commentOpen, setCommentOpen] = useState(false);
 
   const shouldTruncate = post.content.length > 250;
@@ -26,39 +23,24 @@ export default function PostCard({ post }: { post: Post }) {
   const { mutate: unlikepost } = useUnlikePost();
 
   const handleLike = (postId: string) => {
-    if (liked) {
-      unlikepost(postId, {
-        onError: () => {
-          setLiked(true);
-          setLikes(l => l + 1);
-        }
-      });
-      setLiked(false);
-      setLikes(l => l - 1);
-    } else {
-      likepost(postId, {
-        onError: () => {
-          setLiked(false);
-          setLikes(l => l - 1);
-        }
-      });
-      setLiked(true);
-      setLikes(l => l + 1);
+    if (post.isLiked) {
+      unlikepost(postId);
+      return;
     }
+
+    likepost(postId);
   }
 
   const { mutate: bookmarkPost } = useBookmarkPost();
   const { mutate: unbookmarkPost } = useUnbookmarkPost();
 
   const handleBookmark = () => {
-    if (bookmarked) {
-      unbookmarkPost(post.id, {
-      });
-    } else {
-      bookmarkPost(post.id, {
-      });
+    if (post.isBookmarked) {
+      unbookmarkPost(post.id);
+      return;
     }
-    setBookmarked((value) => !value);
+
+    bookmarkPost(post.id);
   };
 
   return (
@@ -84,10 +66,10 @@ export default function PostCard({ post }: { post: Post }) {
             <button
               type="button"
               onClick={handleBookmark}
-              className={`inline-flex h-10 w-10 items-center justify-center transition ${bookmarked ? "text-red-400" : " text-slate-700 dark:text-zinc-300"}`}
+              className={`inline-flex h-10 w-10 items-center justify-center transition ${post.isBookmarked ? "text-red-400" : " text-slate-700 dark:text-zinc-300"}`}
               aria-label="Save post"
             >
-              <Bookmark size={20} fill={bookmarked ? "currentColor" : "none"} />
+              <Bookmark size={20} fill={post.isBookmarked ? "currentColor" : "none"} />
             </button>
           </div>
 
@@ -140,14 +122,14 @@ export default function PostCard({ post }: { post: Post }) {
 
             <button
               onClick={() => handleLike(post.id)}
-              className={`inline-flex items-center rounded-full border p-1.5 transition disabled:opacity-50 cursor-pointer ${liked ? "border-red-400/30 bg-red-500 text-white" : "border-black/8 dark:border-white/8 bg-white/5 hover:border-red-400/30 hover:bg-red-500/10 hover:text-red-300"}`}
+              className={`inline-flex items-center rounded-full border p-1.5 transition disabled:opacity-50 cursor-pointer ${post.isLiked ? "border-red-400/30 bg-red-500 text-white" : "border-black/8 dark:border-white/8 bg-white/5 hover:border-red-400/30 hover:bg-red-500/10 hover:text-red-300"}`}
 
             >
               <motion.span whileTap={{ scale: 0.9 }}>
-                <Heart size={20} fill={liked ? "currentColor" : "none"} />
+                <Heart size={20} fill={post.isLiked ? "currentColor" : "none"} />
               </motion.span>
             </button>
-            <span>{likes}</span>
+            <span>{post.likeCount}</span>
           </div>
         </div>
       </div>

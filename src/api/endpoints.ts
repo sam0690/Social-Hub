@@ -60,7 +60,7 @@ export const endpoints = {
         // createReplyComment: 'api/v1/comments/{commentId}/replies',
         bookmarkPost: 'api/v1/posts/{postId}/bookmark',
         removeBookmark: 'api/v1/posts/{postId}/bookmark',
-        getMyBookmarks: 'api/v1/users/me/bookmarks',
+        getMyBookmarks: 'api/v1/me/bookmarks',
         getPostByHashtag: 'api/v1/hashtags/{hashtag}/posts',
     },
 

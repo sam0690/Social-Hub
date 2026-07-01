@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
-import { Bell, Search, Sparkles, User, X, CheckCheck, Clock3, Filter, Send, LogOut, RefreshCcw } from "lucide-react";
+import { Bell, Search, User, X, CheckCheck, Clock3, Filter, Send, LogOut, RefreshCcw, Settings } from "lucide-react";
 import ThemeToggle from "@/components/navigation/ThemeToggle";
 import { useRouter } from "next/navigation";
 import { useLogout } from "@/hooks/useLogin";
@@ -54,6 +54,10 @@ export default function TopNav() {
 
   }
 
+  const handleSettingsClick = () => {
+    router.push("/settings");
+  }
+
   const unreadCount = useMemo(() => notifications.filter((item) => !item.read).length, []);
 
   useEffect(() => {
@@ -91,7 +95,6 @@ export default function TopNav() {
           </div>
           <div className="hidden sm:block">
             <div className="text-sm font-semibold tracking-wide text-slate-900 dark:text-white">Social Hub</div>
-            <div className="text-xs text-slate-500 dark:text-zinc-400">Home feed</div>
           </div>
         </Link>
 
@@ -247,8 +250,8 @@ export default function TopNav() {
 
           <ThemeToggle />
 
-          <button className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white/70 text-slate-700 transition hover:border-slate-300 hover:bg-white dark:border-white/10 dark:bg-white/5 dark:text-zinc-200 dark:hover:border-white/20 dark:hover:bg-white/10">
-            <User size={17} />
+          <button onClick={handleSettingsClick} className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white/70 text-slate-700 transition hover:border-slate-300 hover:bg-white dark:border-white/10 dark:bg-white/5 dark:text-zinc-200 dark:hover:border-white/20 dark:hover:bg-white/10">
+            <Settings size={17} />
           </button>
 
           <motion.div

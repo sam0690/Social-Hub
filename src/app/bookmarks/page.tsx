@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { PageShell } from "@/components/page-shell";
+import Bookmark from "@/components/bookmark/BookmarksPageClient";
 
 export const metadata: Metadata = {
   title: "Bookmarks",
@@ -7,9 +7,6 @@ export const metadata: Metadata = {
 
 export default function BookmarksPage() {
   return (
-    <PageShell
-      title="Bookmarks"
-      description="Saved posts and references collected for later reading."
-    />
+    <Bookmark/>
   );
 }

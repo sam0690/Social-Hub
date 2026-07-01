@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { SettingsPageClient } from "@/components/settings/settings-page-client";
-import { getSettingsSnapshot } from "@/components/settings/settings-service";
+import SettingsPageClient from "@/components/settings/SettingsPageClient";
+
 
 export const metadata: Metadata = {
   title: "Settings",
@@ -8,8 +8,12 @@ export const metadata: Metadata = {
 };
 
 export default async function SettingsPage() {
-  const initialData = await getSettingsSnapshot();
+  
 
-  return <SettingsPageClient initialData={initialData} />;
+  return(
+    <>
+    <SettingsPageClient/>
+    </>
+  );
 }
 

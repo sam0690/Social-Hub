@@ -80,7 +80,7 @@ export const postServices = {
     },
 
     async getMyBookmarks({ limit, cursor }: { limit?: number; cursor?: string }) {
-        const { data } = await apiClient.get(endpoints.posts.getMyBookmarks, { params: { limit, cursor } });
+        const { data } = await apiClient.get(endpoints.posts.getMyBookmarks, { params: { limit, ...(cursor &&{cursor}) } });
         return data;
     },
 
