@@ -87,9 +87,7 @@ export default function Sidebar() {
         >
           <Plus size={16} />
           Create Post
-        </button>
-
-        
+        </button> 
       </div>
     </motion.aside>
   );
