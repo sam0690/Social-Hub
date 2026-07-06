@@ -25,7 +25,7 @@ export default function Sidebar() {
   { name: "Home", href: "/feed", icon: Home },
   { name: "Explore", href: "/explore", icon: Compass },
   { name: "Messages", href: "/messages", icon: MessageSquare },
-  { name: "Notifications", href: "/notifications", icon: Bell },
+  // { name: "Notifications", href: "/notifications", icon: Bell },
   { name: "Bookmarks", href: "/bookmarks", icon: Bookmark },
   { name: "Profile", href: "/profile", icon: User },
   { name: "Settings", href: "/settings", icon: Settings },

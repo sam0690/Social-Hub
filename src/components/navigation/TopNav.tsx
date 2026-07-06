@@ -9,19 +9,9 @@ import { useRouter } from "next/navigation";
 import { useLogout } from "@/hooks/useLogin";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSearchUsers } from "@/hooks/useSearchUsers";
+import NotificationModal from "@/components/notifications/NotificationModal";
 
 const recentSearches = ["Design systems", "Motion UI", "Creator economy"];
-const suggestions = [
-  { title: "Design leaders", subtitle: "Follow trending creators" },
-  { title: "UI inspiration", subtitle: "Search posts, users, and topics" },
-  { title: "Live events", subtitle: "What is happening now" },
-];
-
-const notifications = [
-  { id: 1, title: "Maya liked your post", time: "2m ago", read: false },
-  { id: 2, title: "Nova Labs followed you", time: "12m ago", read: false },
-  { id: 3, title: "Weekly recap is ready", time: "1h ago", read: true },
-];
 
 export default function TopNav() {
   const [searchOpen, setSearchOpen] = useState(false);
@@ -51,8 +41,6 @@ export default function TopNav() {
       },
     });
   };
-
-  const unreadCount = useMemo(() => notifications.filter((item) => !item.read).length, []);
 
   useEffect(() => {
     function onClick(event: MouseEvent) {
@@ -187,7 +175,9 @@ export default function TopNav() {
               <Search size={17} />
             </button>
 
-            <div className="relative" data-notification-panel>
+            <NotificationModal isOpen={notificationsOpen} onToggle={() => setNotificationsOpen((prev) => !prev)} onClose={() => setNotificationsOpen(false)} />
+
+            {/* <div className="relative" data-notification-panel>
               <motion.button
                 type="button"
                 onClick={() => setNotificationsOpen((value) => !value)}
@@ -243,7 +233,7 @@ export default function TopNav() {
                   </motion.div>
                 )}
               </AnimatePresence>
-            </div>
+            </div> */}
 
             <ThemeToggle />
 

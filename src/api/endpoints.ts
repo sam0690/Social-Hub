@@ -35,10 +35,10 @@ export const endpoints = {
     },
 
     notifications: {
-        myNotifications: 'api/v1/notifications', //get my notifications
-        unreadNotifications: 'api/v1/notifications/unread-count', //get unread notifications count
-        markAsRead: 'api/v1/notifications/{id}/read', //mark a notification as read
-        markAllAsRead: 'api/v1/notifications/read-all', //mark all notifications as read
+        getMyNotifications: 'api/v1/notifications',
+        getUnreadNotifications: 'api/v1/notifications/unread-count',
+        markAsRead: 'api/v1/notifications/{id}/read', 
+        markAllAsRead: 'api/v1/notifications/read-all', 
     },
 
     posts: {
