@@ -1,6 +1,7 @@
 export type NotificationType =
   | "LIKE_POST"
   | "COMMENT_POST"
+  | "LIKE_COMMENT"
   | "REPLY_COMMENT"
   | "FOLLOW";
 
@@ -40,6 +41,8 @@ export function notificationMessage(n: Notification): string {
       return "replied to your comment";
     case "FOLLOW":
       return "started following you";
+    case "LIKE_COMMENT":
+      return "liked your comment";
     default:
       return "";
   }

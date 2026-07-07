@@ -3,7 +3,7 @@ import { Bell, CreditCard, Globe, HardDrive, Lock, Palette, Search, Settings, Us
 const NAV = {
   profile: { label: "Update profile", icon: User },
   security: { label: "Password & security", icon: Lock },
-  language: { label: "Language", icon: Globe },
+  language: { label: "Language & region", icon: Globe },
   notifications: { label: "Notifications", icon: Bell },
   appearance: { label: "Appearance", icon: Palette },
   storage: { label: "Storage", icon: HardDrive },

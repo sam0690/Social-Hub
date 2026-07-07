@@ -41,33 +41,29 @@ export function ChatSidebar({
   return (
     <aside
       className={cn(
-        "flex h-full min-h-0 flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl",
+        "flex h-full min-h-0 flex-col overflow-hidden rounded-3xl border border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 backdrop-blur-xl",
         compact && "rounded-none border-0 bg-transparent backdrop-blur-0",
         className,
       )}
     >
-      <div className="shrink-0 border-b border-white/10 p-4 sm:p-5">
-        <div className="mt-3 flex gap-3 items-center">
-          <Link href="/feed" className="hover:bg-white/10 rounded-md p-1">
-            <ArrowLeft />
-          </Link>
-          <h2 className=" text-xl font-semibold text-white">Messages</h2>
+      <div className="shrink-0 border-b bg-white dark:bg-slate-950 border-slate-300 dark:border-white/10 p-4 sm:p-5">
+        <div className="flex gap-3 items-center">
+          <h2 className=" text-xl font-semibold text-slate-900 dark:text-white">Messages</h2>
         </div>
         <label className="mt-4 block">
-          <span className="sr-only">Search conversations</span>
           <div className="relative">
             <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
             <Input
               value={query}
               onChange={(event) => onQueryChange(event.target.value)}
               placeholder="Search conversations"
-              className="h-11 border-white/10 bg-slate-950/40 pl-9 text-white placeholder:text-slate-500 focus-visible:ring-cyan-500/30"
+              className="h-11 border-slate-300 dark:border-white/10 bg-slate-100 dark:bg-slate-950/40 pl-9 text-slate-900 dark:text-white placeholder:text-slate-500 focus:outline-none focus:ring-0 focus:ring-transparent"
             />
           </div>
         </label>
       </div>
 
-      <ScrollArea className="min-h-0 flex-1">
+      <ScrollArea className="min-h-0 flex-1 bg-white dark:bg-slate-950">
         <div className="space-y-2 p-3 sm:p-4">
           {conversations.map((conversation, index) => {
             const active = conversation.id === activeConversationId;
@@ -85,21 +81,21 @@ export function ChatSidebar({
                 className={cn(
                   "group flex w-full items-start gap-3 rounded-2xl border px-3 py-3 text-left transition-all",
                   active
-                    ? "border-violet-400/30 bg-violet-400/10 shadow-lg shadow-violet-500/10"
-                    : "border-transparent bg-white/0 hover:border-white/10 hover:bg-white/5",
+                    ? "border-violet-400/30 bg-slate-200 dark:bg-violet-400/10 shadow-lg shadow-violet-500/10"
+                    : "border-transparent bg-white/0 hover:border-slate-300 dark:hover:border-white/10 hover:bg-slate-100 dark:hover:bg-white/5",
                 )}
               >
                 <div className="relative shrink-0">
                   <div
                     className={cn(
-                      "flex size-12 items-center justify-center rounded-full bg-linear-to-br text-sm font-semibold text-white shadow-lg",
+                      "flex size-12 items-center justify-center rounded-full bg-linear-to-br text-sm font-semibolddark:text-white shadow-lg",
                       conversation.accent,
                     )}
                   >
                     {conversation.avatar}
                   </div>
                   {conversation.status === "online" ? (
-                    <div className="absolute right-0 bottom-0 rounded-full bg-green-400 h-2 w-2 ring-2 ring-green-400/20">
+                    <div className="absolute right-0 bottom-0 rounded-full bg-green-400 h-2 w-2">
                     </div>
                   ) : null}
                 </div>
@@ -107,12 +103,12 @@ export function ChatSidebar({
                 <div className="min-w-0 flex-1 space-y-1">
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <p className="truncate font-medium text-white">{conversation.name}</p>
+                      <p className="truncate font-medium text-slate-900 dark:text-white">{conversation.name}</p>
                     </div>
-                    <div className="flex shrink-0 items-center gap-2 text-[11px] text-slate-400">
+                    <div className="flex shrink-0 items-center gap-2 text-[11px] text-slate-500">
                       <span>{conversation.timestamp}</span>
                       {conversation.unread > 0 ? (
-                        <span className="inline-flex min-w-6 items-center justify-center rounded-full bg-cyan-400 px-2 py-0.5 text-[10px] font-semibold text-slate-950">
+                        <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-cyan-400 px-2 py-0.5 text-[10px] font-semibold text-slate-950">
                           {conversation.unread}
                         </span>
                       ) : null}
@@ -121,14 +117,12 @@ export function ChatSidebar({
                   <p
                     className={cn(
                       "line-clamp-1 text-sm leading-5",
-                      conversation.unread > 0 ? "font-semibold text-white" : "text-slate-300",
+                      conversation.unread > 0 ? "font-semibold text-slate-900 dark:text-white" : "text-slate-700 dark:text-slate-300",
                     )}
                   >
                     {conversation.preview}
                   </p>
                   <div className="flex items-center gap-2 text-[11px] text-slate-500">
-                    <span>{conversation.title}</span>
-                    <span className="size-1 rounded-full bg-slate-600" />
                     <span>{conversation.lastSeen}</span>
                   </div>
                 </div>

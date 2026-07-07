@@ -51,7 +51,7 @@ export default function SettingsPageClient() {
             />
           </aside>
 
-          <section className="h-full min-h-0 overflow-y-auto sm:pb-20 md:col-span-4 lg:col-span-7 scrollbar-hide">
+          <section className="h-full min-h-0 overflow-y-auto pb-20 lg:pb-0 md:col-span-4 lg:col-span-7 scrollbar-hide">
             <SettingContents activeSection={activeSection} />
           </section>
         </div>

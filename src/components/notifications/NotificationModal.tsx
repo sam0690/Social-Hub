@@ -2,9 +2,9 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Bell, CheckCheck, Clock3, Heart, MessageCircle, UserPlus, Loader2 } from "lucide-react";
 import Link from "next/link";
-import { useMemo, useRef, useCallback } from "react";
+import { useRef, useCallback, useState } from "react";
 import { timeAgo } from "@/lib/utils";
-import { useGetMyNotifications, useGetUnreadNotificationsCount, useMarkAllNotificationsAsRead, useMarkNotificationAsRead  } from "@/hooks/useNotifications";
+import { useGetMyNotifications, useGetUnreadNotificationsCount, useMarkAllNotificationsAsRead, useMarkNotificationAsRead } from "@/hooks/useNotifications";
 import { notificationMessage, notificationHref, Notification } from "@/types/notifications";
 import Avatar from "../ui/avatar";
 
@@ -17,6 +17,7 @@ interface NotificationModalProps {
 const ICONS = {
   LIKE_POST: <Heart size={12} className="fill-white text-white" />,
   COMMENT_POST: <MessageCircle size={12} className="fill-white text-white" />,
+  LIKE_COMMENT: <Heart size={12} className="fill-white text-white" />,
   REPLY_COMMENT: <MessageCircle size={12} className="fill-white text-white" />,
   FOLLOW: <UserPlus size={12} className="text-white" />,
 };
@@ -29,6 +30,8 @@ const ICON_BG = {
 };
 
 const NotificationModal = ({ isOpen, onToggle }: NotificationModalProps) => {
+  const [showUnreadOnly, setShowUnreadOnly] = useState(false);
+
   const {
     data,
     isLoading,
@@ -36,11 +39,11 @@ const NotificationModal = ({ isOpen, onToggle }: NotificationModalProps) => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useGetMyNotifications();
+  } = useGetMyNotifications(showUnreadOnly);
 
   // flatten all pages into one list
-  const notifications =  data?.pages.flatMap((page) => page.data) ?? [];
-  
+  const notifications = data?.pages.flatMap((page) => page.data) ?? [];
+
 
   const { data: unreadCountData } = useGetUnreadNotificationsCount();
   const { mutate: markAllAsRead } = useMarkAllNotificationsAsRead();
@@ -94,17 +97,38 @@ const NotificationModal = ({ isOpen, onToggle }: NotificationModalProps) => {
             transition={{ duration: 0.18 }}
             className="absolute right-0 top-full mt-2 w-85 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl shadow-slate-900/10 dark:border-white/10 dark:bg-black dark:shadow-black/40"
           >
-            <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3 dark:border-white/8">
-              <div>
-                <div className="text-sm font-semibold text-slate-900 dark:text-white">Notifications</div>
-                <div className="text-xs text-slate-500 dark:text-zinc-400">{unreadCountData?.count} unread</div>
-              </div>
-              <button
-                className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-700 transition hover:bg-slate-200 dark:bg-white/5 dark:text-zinc-200 dark:hover:bg-white/10"
-                onClick={() => markAllAsRead()}
-              >
-                <CheckCheck size={13} /> Mark all read
-              </button>
+            <div className=" border-b border-slate-200 px-4 py-3 dark:border-white/8">
+              <div className="p-2 font-semibold text-slate-900 dark:text-white">Notifications</div>
+                <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-zinc-400">
+                  <button
+                    type="button"
+                    onClick={() => setShowUnreadOnly(false)}
+                    className={`rounded-full px-3 py-1 text-xs transition ${
+                      !showUnreadOnly
+                        ? "bg-slate-700 text-white dark:bg-white dark:text-slate-900"
+                        : "bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-white/5 dark:text-zinc-200 dark:hover:bg-white/10"
+                    }`}
+                  >
+                    All
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowUnreadOnly(true)}
+                    className={`rounded-full px-3 py-1 text-xs transition ${
+                      showUnreadOnly
+                        ? "bg-slate-700 text-white dark:bg-white dark:text-slate-900"
+                        : "bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-white/5 dark:text-zinc-200 dark:hover:bg-white/10"
+                    }`}
+                  >
+                    Unread
+                  </button>
+                  <button
+                    className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-700 transition hover:bg-slate-200 dark:bg-white/5 dark:text-zinc-200 dark:hover:bg-white/10"
+                    onClick={() => markAllAsRead()}
+                  >
+                    <CheckCheck size={13} /> Mark all read
+                  </button>
+                </div>
             </div>
 
             <div className="max-h-80 overflow-y-auto p-2">
@@ -116,7 +140,7 @@ const NotificationModal = ({ isOpen, onToggle }: NotificationModalProps) => {
               )}
               {!isLoading && notifications.length === 0 && (
                 <div className="py-8 text-center text-sm text-slate-500 dark:text-zinc-400">
-                  No notifications yet
+                  {showUnreadOnly ? "No unread notifications" : "No notifications yet"}
                 </div>
               )}
 
@@ -127,15 +151,15 @@ const NotificationModal = ({ isOpen, onToggle }: NotificationModalProps) => {
                     key={item.id}
                     ref={isLast ? lastItemRef : undefined}
                     href={notificationHref(item)}
-                    onClick={()=>{
-                        handleMarkNotificationAsRead(item.id);
-                        onToggle();
+                    onClick={() => {
+                      handleMarkNotificationAsRead(item.id);
+                      onToggle();
                     }}
-                    className="flex items-start gap-3 rounded-2xl px-3 py-3 transition"
+                    className="flex items-start gap-3 rounded-2xl px-3 py-3 transition hover:bg-slate-100 dark:hover:bg-white/5"
                   >
                     <div className="relative shrink-0">
                       <div className="flex h-9 w-9 items-center justify-center rounded-full bg-indigo-500/20 text-sm font-bold text-indigo-400">
-                        <Avatar size={36} />
+                        <Avatar size={36} name={item.actor.username} />
                       </div>
                       <span
                         className={`absolute -bottom-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full ring-2 ring-white dark:ring-[#0b0c16] ${ICON_BG[item.type]}`}

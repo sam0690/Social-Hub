@@ -210,7 +210,7 @@ export default function SettingContents({ activeSection }: SettingContentsProps)
           <>
             <SectionCard title="Change password">
               <div className="space-y-4">
-                <TextField label="Current password" type="password" />
+                <TextField label="Current password" type="password" placeholder="Enter current password" />
                 <TextField label="New password" type="password" placeholder="At least 8 characters" />
                 <TextField label="Confirm new password" type="password" />
                 <div className="rounded-2xl bg-slate-100 px-4 py-3 text-sm text-slate-500 dark:bg-white/5 dark:text-zinc-400">
