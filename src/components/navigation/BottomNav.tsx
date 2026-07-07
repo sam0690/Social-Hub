@@ -22,7 +22,7 @@ export default function BottomNav() {
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-50 flex justify-center px-3 pb-[env(safe-area-inset-bottom)] md:hidden">
-      <div className="w-full max-w-md rounded-t-3xl border border-white/10 bg-black/70 px-3 py-2 shadow-2xl shadow-black/40 backdrop-blur-xl">
+      <div className="w-full max-w-md rounded-t-3xl border border-black/50 dark:border-white/10 bg-white dark:bg-black/70 px-3 py-2 shadow-2xl shadow-black/40 backdrop-blur-md">
         <div className="grid grid-cols-5 gap-1">
           {nav.map((item) => {
             const Icon = item.icon;
@@ -50,14 +50,14 @@ export default function BottomNav() {
                 aria-current={active ? "page" : undefined}
                 className={`flex flex-col items-center justify-center gap-1 rounded-2xl px-2 py-2 text-[11px] font-medium transition ${
                   active
-                    ? "bg-white/10 text-white"
-                    : "text-zinc-400 hover:bg-white/5 hover:text-white"
+                    ? "bg-black/20 dark:bg-white/10 text-black dark:text-white"
+                    : "text-zinc-600 dark:text-zinc-400 hover:bg-black/5 dark:hover:bg-white/5 hover:text-slate-700 dark:hover:text-white"
                 }`}
               >
                 <motion.span whileTap={{ scale: 0.88 }} className="inline-flex items-center justify-center">
                   <Icon size={18} />
                 </motion.span>
-                <span className={active ? "text-white" : undefined}>{item.label}</span>
+                <span className={active ? "text-black dark:text-white" : undefined}>{item.label}</span>
               </Link>
             );
           })}

@@ -38,27 +38,24 @@ export function ChatWindow({
 
   if (!conversation) {
     return (
-      <section className="flex min-h-0 flex-1 items-center justify-center rounded-3xl border border-white/10 bg-white/5 p-8 text-center backdrop-blur-xl">
+      <section className="flex min-h-0 flex-1 items-center justify-center rounded-3xl border border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 p-8 text-center backdrop-blur-xl">
         <div className="max-w-sm space-y-3">
           <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-cyan-400/10 text-cyan-200">
             <Sparkles className="size-6" />
           </div>
           <h3 className="text-xl font-semibold text-white">Select a conversation</h3>
-          <p className="text-sm leading-6 text-slate-400">
-            Pick a chat from the sidebar to open the message thread and start replying.
-          </p>
         </div>
       </section>
     );
   }
 
   return (
-    <section className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl">
-      <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-4 sm:px-5">
+    <section className="flex h-full flex-1 flex-col overflow-hidden rounded-3xl border border-slate-300 dark:border-white/10 bg-white dark:bg-white/5 backdrop-blur-xl">
+      <div className="flex items-center justify-between gap-3 border-b border-slate-300 dark:border-white/10 px-4 py-4 sm:px-5">
         <div className="flex min-w-0 items-center gap-3">
           <div
             className={cn(
-              "flex size-12 items-center justify-center rounded-full bg-linear-to-br text-sm font-semibold text-white shadow-lg",
+              "flex size-12 items-center justify-center rounded-full bg-linear-to-br text-sm font-semibold text-slate-900 dark:text-white shadow-lg",
               conversation.accent,
             )}
           >
@@ -66,31 +63,31 @@ export function ChatWindow({
           </div>
           <div className="min-w-0">
             <div className="flex flex-col items-start justify-start">
-              <h2 className="truncate text-lg font-semibold text-white">{conversation.name}</h2>
-              <p className="text-sm text-slate-400">{conversation.handle}</p>
+              <h2 className="truncate text-md font-semibold text-slate-900 dark:text-white">{conversation.name}</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">{conversation.handle}</p>
             </div>
-            
+
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon-sm" className="text-slate-300 hover:bg-white/5 hover:text-white">
-            <Video className="size-6" />
+        <div className="flex items-center text-slate-600 dark:text-slate-300 ">
+          <Button variant="ghost" size="icon-sm" className="p-4 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full">
+            <Video className="size-6" strokeWidth={2} />
             <span className="sr-only">Start video call</span>
           </Button>
-          <Button variant="ghost" size="icon-sm" className="text-slate-300 hover:bg-white/5 hover:text-white">
-            <Phone className="size-5" />
+          <Button variant="ghost" size="icon-sm" className="p-4 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full">
+            <Phone className="size-5" strokeWidth={2.5} />
             <span className="sr-only">Start call</span>
           </Button>
           {onOpenSidebar ? (
-            <Button variant="ghost" size="icon-sm" className="text-slate-300 hover:bg-white/5 hover:text-white md:hidden" onClick={onOpenSidebar}>
-              <UserRound className="size-4" />
+            <Button variant="ghost" size="icon-sm" className="p-4 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full md:hidden" onClick={onOpenSidebar}>
+              <UserRound className="size-5" strokeWidth={2.5} />
               <span className="sr-only">Open conversations</span>
             </Button>
           ) : null}
           {onOpenInfo ? (
-            <Button variant="ghost" size="icon-sm" className="text-slate-300 hover:bg-white/5 hover:text-white xl:hidden" onClick={onOpenInfo}>
-              <Info className="size-5" />
+            <Button variant="ghost" size="icon-sm" className="p-4 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full" onClick={onOpenInfo}>
+              <Info className="size-5" strokeWidth={2.5} />
               <span className="sr-only">Open info panel</span>
             </Button>
           ) : null}
@@ -100,10 +97,6 @@ export function ChatWindow({
 
       <ScrollArea className="min-h-0 flex-1">
         <div className="space-y-4 p-4 sm:p-6">
-          <div className="mx-auto max-w-md rounded-full border border-violet-400/20 bg-violet-400/10 px-4 py-2 text-center text-xs text-violet-100">
-            Messages sync across devices in real time.
-          </div>
-
           <AnimatePresence initial={false}>
             {messages.map((message, index) => {
               const incoming = message.author === "incoming";
@@ -120,9 +113,9 @@ export function ChatWindow({
                 >
                   <div
                     className={cn(
-                      "max-w-[86%] rounded-3xl px-4 py-3 shadow-lg sm:max-w-[72%]",
+                      "max-w-[86%] rounded-3xl px-4 py-3 sm:max-w-[72%]",
                       incoming
-                        ? "border border-white/10 bg-slate-900/70 text-slate-100"
+                        ? "border border-slate-300 dark:border-white/10 bg-slate-200 dark:bg-slate-900/70 text-slate-700 dark:text-slate-100"
                         : "bg-linear-to-r from-violet-500 to-fuchsia-500 text-white",
                     )}
                   >
@@ -140,7 +133,7 @@ export function ChatWindow({
               animate={{ opacity: 1, y: 0 }}
               className="flex justify-start"
             >
-              <div className="rounded-3xl border border-white/10 bg-slate-900/70 px-4 py-3 text-sm text-slate-300 shadow-lg">
+              <div className=" text-slate-500 dark:text-slate-300 text-sm">
                 Typing...
               </div>
             </motion.div>
@@ -151,35 +144,37 @@ export function ChatWindow({
       </ScrollArea>
 
       <div className="">
-        <div className="flex items-center justify-end gap-4 border border-white/10 bg-slate-950/60 p-3 shadow-2xl shadow-black/20">
-         <Button variant="ghost" size="icon-sm" className="shrink-0 text-slate-300 hover:bg-white/5 hover:text-white">
-              <Mic className="size-5" />
-              <span className="sr-only">Attach file</span>
-            </Button>
-             <Button variant="ghost" size="icon-sm" className="shrink-0 text-slate-300 hover:bg-white/5 hover:text-white">
-              <Paperclip className="size-5" />
-              <span className="sr-only">Attach file</span>
-            </Button>
-             <Button variant="ghost" size="icon-sm" className="shrink-0 text-slate-300 hover:bg-white/5 hover:text-white">
-              <Smile className="size-5" />
-              <span className="sr-only">Attach file</span>
-            </Button>
-          <div className="flex flex-1 items-end gap-2 min-w-0">
+        <div className="flex items-center justify-end gap-2 border border-slate-300 dark:border-white/10 bg-white dark:bg-slate-950/60 p-3 shadow-2xl shadow-black/20">
+          <Button variant="ghost" size="icon-sm" className="shrink-0 p-5 rounded-full text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-white/5 dark:hover:text-white">
+            <Paperclip className="size-5" />
+            <span className="sr-only">Attach file</span>
+          </Button>
+
+          <Button variant="ghost" size="icon-sm" className="shrink-0 p-5 rounded-full text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-white/5 dark:hover:text-white">
+            <Mic className="size-5" />
+            <span className="sr-only">Attach file</span>
+          </Button>
+
+          <div className="flex flex-1 items-center gap-2 min-w-0 rounded-full border border-white/10 bg-slate-200 dark:bg-slate-900/70 px-4 py-2 focus-within:ring focus-within:ring-slate-500 ">
             <input
               type="text"
               value={draft}
               onChange={(event) => onDraftChange(event.target.value)}
               placeholder={`Message ${conversation.name.split(" ")[0]}...`}
-              className="min-w-0 flex-1 rounded-full border border-white/10 bg-slate-900/70 px-4 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:ring focus:ring-slate-500"
+              className="min-w-0 flex-1 text-slate-900 dark:text-white placeholder:text-slate-500 focus:outline-none"
             />
-          </div>
-           <Button
-              onClick={onSendMessage}
-              disabled={!draft.trim()}
-              className="shrink-0 hover"
-            >
-              <SendHorizonal className="size-6 text-purple-400" />
+            <Button variant="ghost" size="icon-sm" className="shrink-0 p-2 text-purple-700 dark:text-slate-300 hover:text-purple-800 dark:hover:text-white rounded-full">
+              <Smile className="size-5" />
+              <span className="sr-only">Attach file</span>
             </Button>
+          </div>
+          <Button
+            onClick={onSendMessage}
+            disabled={!draft.trim()}
+            className="shrink-0 hover"
+          >
+            <SendHorizonal className="size-5 text-purple-800 dark:text-purple-400" strokeWidth={3} />
+          </Button>
         </div>
       </div>
     </section>

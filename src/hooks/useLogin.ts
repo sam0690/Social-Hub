@@ -15,3 +15,9 @@ export const useLogout = () => {
         mutationFn: () => authService.logout()
     });
 }
+
+export const useRefresh = () => {
+    return useMutation({
+        mutationFn: () => authService.refresh()
+    });
+}

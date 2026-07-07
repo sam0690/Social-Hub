@@ -12,23 +12,24 @@ import {
   Bookmark,
   User,
   Settings,
-  Plus,
-  Sparkles,
+  Plus
 } from "lucide-react";
-
-const nav = [
-  { name: "Home", href: "/feed", icon: Home },
-  { name: "Explore", href: "/explore", icon: Compass },
-  { name: "Messages", href: "/messages", icon: MessageSquare },
-  { name: "Notifications", href: "/notifications", icon: Bell },
-  { name: "Bookmarks", href: "/bookmarks", icon: Bookmark },
-  { name: "Profile", href: "/profile", icon: User },
-  { name: "Settings", href: "/settings", icon: Settings },
-];
+import {useCurrentUser} from "@/hooks/useCurrentUser";
 
 export default function Sidebar() {
   const pathname = usePathname();
   const { openModal } = useCreatePostModal();
+  const { data: user, isLoading } = useCurrentUser();
+
+  const nav = [
+  { name: "Home", href: "/feed", icon: Home },
+  { name: "Explore", href: "/explore", icon: Compass },
+  { name: "Messages", href: "/messages", icon: MessageSquare },
+  // { name: "Notifications", href: "/notifications", icon: Bell },
+  { name: "Bookmarks", href: "/bookmarks", icon: Bookmark },
+  { name: "Profile", href: "/profile", icon: User },
+  { name: "Settings", href: "/settings", icon: Settings },
+];
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
@@ -46,10 +47,13 @@ export default function Sidebar() {
               <div className="h-11 w-11 rounded-full bg-linear-to-br from-cyan-400 to-indigo-600" />
               <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border border-none dark:border-black bg-emerald-400 shadow-lg shadow-emerald-400/30" />
             </div>
-            <div className="min-w-0 flex-1">
-              <div className="truncate text-sm font-medium text-slate-900 dark:text-white">Jane Doe</div>
-              <div className="truncate text-xs text-zinc-400">@janedoe · Pro creator</div>
+            {isLoading ? (
+              <div className="h-4 w-20 rounded bg-slate-200 dark:bg-white/10" />
+            ) : (<div className="min-w-0 flex-1">
+              <div className="truncate text-sm font-medium text-slate-900 dark:text-white">{user?.displayName}</div>
+              <div className="truncate text-xs text-zinc-400">{user?.username}</div>
             </div>
+          )}
           </div>
         </div>
         <nav className="flex flex-col gap-1 items-stretch">
@@ -83,9 +87,7 @@ export default function Sidebar() {
         >
           <Plus size={16} />
           Create Post
-        </button>
-
-        
+        </button> 
       </div>
     </motion.aside>
   );

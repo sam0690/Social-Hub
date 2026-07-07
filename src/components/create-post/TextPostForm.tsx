@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Heart, MessageCircle, Share2 } from "lucide-react";
+import { Heart, MessageCircle, ReceiptTurkishLiraIcon, Share2 } from "lucide-react";
+import { useCreatePost } from "@/hooks/useCreatePostModal";
 
 export default function TextPostForm() {
   const [content, setContent] = useState("");
@@ -18,13 +19,17 @@ export default function TextPostForm() {
     }
   };
 
-  const handlePost = () => {
-    if (content.trim()) {
-      console.log("Text Post:", content);
-      setContent("");
-      setCharCount(0);
-      // Handle post submission here
-    }
+  const {mutate:createPostMutation, isPending} = useCreatePost();
+
+  const handlePost = async (e: React.FormEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    console.log("form submitted with content:", content);
+    if (content.trim())
+      ReceiptTurkishLiraIcon
+    await createPostMutation({ content, visibility: "PUBLIC" });
+    setContent("");
+    setCharCount(0);
+
   };
 
   const isValid = content.trim().length > 0;
@@ -65,9 +70,9 @@ export default function TextPostForm() {
         <Button
           onClick={handlePost}
           disabled={!isValid}
-          className="flex-1 bg-linear-to-r from-indigo-500 to-fuchsia-500 hover:opacity-90"
+          className="flex-1 text-white bg-linear-to-r from-indigo-500 to-fuchsia-500 hover:opacity-90"
         >
-          Post
+          {isPending ? "Posting..." : "Post"}
         </Button>
       </div>
     </div>

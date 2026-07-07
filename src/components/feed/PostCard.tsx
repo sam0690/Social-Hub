@@ -1,24 +1,67 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Avatar from "@/components/ui/avatar";
 import { Bookmark, CheckCheck, ChevronDown, ChevronUp, Heart, MessageCircle, Repeat } from "lucide-react";
 import type { Post } from "@/types/post";
 import Image from "next/image";
+import { timeAgo } from "@/lib/utils"
+import { useLikePost, useUnlikePost } from "@/hooks/usePosts";
+import Link from "next/link";
+import CommentModal from "@/components/comment-post/CommentModal";
+import { useBookmarkPost, useUnbookmarkPost } from "@/hooks/useBookmarks";
+import LikesModal from "./LikesModal";
 
-export default function PostCard({ post, user }: { post: Post; user: { name: string; handle: string; verified?: boolean } }) {
-  const [liked, setLiked] = useState(false);
-  const [likes, setLikes] = useState(post.likes);
-  const [saved, setSaved] = useState(false);
+export default function PostCard({ post }: { post: Post }) {
+  const [bookmarked, setBookmarked] = useState(post.isBookmarked);
   const [expanded, setExpanded] = useState(false);
-  const shouldTruncate = post.content.length > 110;
-  const visibleContent = shouldTruncate && !expanded ? `${post.content.slice(0, 110)}…` : post.content;
+  const [liked, setLiked] = useState(post.isLiked);
+  const [likes, setLikes] = useState(post.likeCount);
+  const [commentOpen, setCommentOpen] = useState(false);
+  const [likesOpen, setLikesOpen] = useState(false);
 
-  function toggleLike() {
-    setLiked((s) => !s);
-    setLikes((l) => (liked ? l - 1 : l + 1));
+  const shouldTruncate = post.content.length > 250;
+  const visibleContent = shouldTruncate && !expanded ? `${post.content.slice(0, 250)}…` : post.content;
+
+  const { mutate: likepost, } = useLikePost();
+  const { mutate: unlikepost } = useUnlikePost();
+
+  const handleLike = (postId: string) => {
+    if (liked) {
+      unlikepost(postId, {
+        onError: () => {
+          setLiked(true);
+          setLikes(l => l + 1);
+        }
+      });
+      setLiked(false);
+      setLikes(l => l - 1);
+    } else {
+      likepost(postId, {
+        onError: () => {
+          setLiked(false);
+          setLikes(l => l - 1);
+        }
+      });
+      setLiked(true);
+      setLikes(l => l + 1);
+    }
   }
+
+  const { mutate: bookmarkPost } = useBookmarkPost();
+  const { mutate: unbookmarkPost } = useUnbookmarkPost();
+
+  const handleBookmark = () => {
+    if (bookmarked) {
+      unbookmarkPost(post.id, {
+      });
+    } else {
+      bookmarkPost(post.id, {
+      });
+    }
+    setBookmarked((value) => !value);
+  };
 
   return (
     <motion.article
@@ -28,29 +71,31 @@ export default function PostCard({ post, user }: { post: Post; user: { name: str
         <div className="flex-1">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <Avatar name={user.name} online />
+              <Avatar name={post.author.displayName} online />
               <div>
                 <div className="flex items-center gap-1.5 font-semibold text-slate-900 dark:text-white">
-                  {user.name}
-                  {user.verified && <CheckCheck size={14} className="text-sky-400" />}
+                  <Link href={`/profile/${post.author.username}`}>{post.author.displayName}</Link>
+                  {post.author.isVerified && <CheckCheck size={14} className="text-sky-400" />}
                 </div>
                 <div className="text-xs text-slate-700 dark:text-zinc-400">
-                  @{user.handle} · {post.timestamp}
+                  @{post.author.username} · {timeAgo(post.updatedAt)}
                 </div>
               </div>
             </div>
 
             <button
               type="button"
-              onClick={() => setSaved((value) => !value)}
-              className={`inline-flex h-10 w-10 items-center justify-center transition ${saved ? "text-red-400" : " text-slate-700 dark:text-zinc-300"}`}
+              onClick={handleBookmark}
+              className={`inline-flex h-10 w-10 items-center justify-center transition ${bookmarked ? "text-red-400" : " text-slate-700 dark:text-zinc-300"}`}
               aria-label="Save post"
             >
-              <Bookmark size={20} fill={saved ? "currentColor" : "none"} />
+              <Bookmark size={20} fill={bookmarked ? "currentColor" : "none"} />
             </button>
           </div>
 
-          <div className="mt-3 text-sm leading-6 text-slate-900 dark:text-zinc-200">
+          <div className="border border-b-slate-300 dark:border-white/10 mt-3"></div>
+
+          <div className="mt-3 ml-3 text-sm leading-6 text-slate-900 dark:text-zinc-200">
             {visibleContent}
             {shouldTruncate && (
               <button
@@ -71,7 +116,7 @@ export default function PostCard({ post, user }: { post: Post; user: { name: str
             )}
           </div>
 
-          {post.img && (
+          {post.postType === "image" && post.img && (
             // <div className="mt-4 overflow-hidden rounded-2xl border border-white/8 bg-linear-to-br from-indigo-500/30 via-slate-700/50 to-fuchsia-500/25 p-2 shadow-lg shadow-black/20">
             <div className="mt-4 overflow-hidden rounded-2xl border border-white/8 bg-slate-200 dark:bg-slate-900 p-2">
               <div className="relative h-100 rounded-xl overflow-hidden">
@@ -80,27 +125,49 @@ export default function PostCard({ post, user }: { post: Post; user: { name: str
             </div>
           )}
 
-          <div className="mt-4 flex flex-wrap items-center gap-2 text-sm text-zinc-400 sm:gap-4">
-            <button
-              onClick={toggleLike}
-              className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 transition ${liked ? "border-red-400/30 bg-red-500 text-white" : "border-white/8 bg-white/5 hover:border-red-400/30 hover:bg-red-500/10 hover:text-red-300"}`}
-            >
-              <motion.span whileTap={{ scale: 0.9 }}>
-                <Heart size={16} fill={liked ? "currentColor" : "none"} />
-              </motion.span>
-              <span>{likes}</span>
-            </button>
+          <div className="mt-4 px-4 flex items-center gap-5 text-md text-zinc-600 dark:text-zinc-300 sm:gap-4 font-semibold">
+            <div className="flex gap-2 items-center">
+              <button
+                onClick={() => setCommentOpen(true)}
+                className="inline-flex items-center gap-2 rounded-full border border-black/8 dark:border-white/8 dark:bg-white/5 transition hover:border-indigo-400/30 hover:bg-indigo-500/10 hover:text-indigo-300 p-2">
+                <MessageCircle size={16} />
+              </button>
+              <span>{post.commentCount}</span>
+            </div>
 
-            <button className="inline-flex items-center gap-2 rounded-full border border-white/8 bg-white/5 px-3 py-2 transition hover:border-indigo-400/30 hover:bg-indigo-500/10 hover:text-indigo-300">
-              <MessageCircle size={16} /> <span>{post.comments}</span>
-            </button>
+            <div className="flex gap-2 items-center">
+              <button className="inline-flex items-center gap-2 rounded-full border border-black/8 dark:border-white/8 dark:bg-white/5  transition hover:border-emerald-400/30 hover:bg-emerald-500/10 hover:text-emerald-300 p-2">
+                <Repeat size={16} />
+              </button>
+              <span>{post.shareCount}</span>
+            </div>
 
-            <button className="inline-flex items-center gap-2 rounded-full border border-white/8 bg-white/5 px-3 py-2 transition hover:border-emerald-400/30 hover:bg-emerald-500/10 hover:text-emerald-300">
-              <Repeat size={16} /> <span>Repost</span>
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={() => handleLike(post.id)}
+                className={`h-10 w-10 inline-flex items-center justify-center rounded-full border p-2 transition disabled:opacity-50 cursor-pointer ${liked ? "border-red-400/30 bg-red-500 text-white" : "border-black/8 dark:border-white/8 bg-white/5 hover:border-red-400/30 hover:bg-red-500/10 hover:text-red-300"}`}
+              >
+                <motion.span whileTap={{ scale: 0.9 }}>
+                  <Heart size={20} fill={liked ? "currentColor" : "none"} />
+                </motion.span>
+              </button>
+              <div className="hover:underline cursor-pointer p-2" onClick={() => setLikesOpen(true)}>
+                {post.likeCount}
+              </div>
+            </div>
           </div>
         </div>
       </div>
+      <CommentModal
+        post={post}
+        isOpen={commentOpen}
+        onClose={() => setCommentOpen(false)}
+      />
+      <LikesModal
+        postId={post.id}
+        isOpen={likesOpen}
+        onClose={() => setLikesOpen(false)}
+      />
     </motion.article>
   );
 }

@@ -1,62 +1,44 @@
 "use client";
 
-import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
+import { useState } from "react";
 import Sidebar from "@/components/sidebar/Sidebar";
+import FollowUsers from "@/components/activity/FollowUsers";
 import TopNav from "@/components/navigation/TopNav";
 import BottomNav from "@/components/navigation/BottomNav";
-import { posts } from "@/lib/mock-data/mockFeed";
+import ExploreFeed from "./ExploreFeed";
 import { ExploreHeader } from "./ExploreHeader";
-import { TrendingTopicsWidget } from "./TrendingTopicsWidget";
-import { PopularPostsSection } from "./PopularPostsSection";
-import { BrowseHashtagsSection } from "./BrowseHashtagsSection";
-import { RecommendedCreatorsSection } from "./RecommendedCreatorsSection";
 
-export default function ExplorePageClient() {
-  const topPosts = useMemo(
-    () =>
-      [...posts]
-        .sort((a, b) => b.likes + b.comments - (a.likes + a.comments))
-        .slice(0, 3),
-    [],
-  );
+export default function BookmarksPageClient() {
+  const [scrollContainer, setScrollContainer] = useState<HTMLElement | null>(null);
 
   return (
     <motion.main
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.45 }}
-      className="flex h-[100svh] flex-col overflow-hidden bg-[#030313] text-white"
+      className="flex h-svh flex-col overflow-hidden bg-slate-200 dark:bg-[#030313] text-white"
     >
       <TopNav />
 
       <div className="flex-1 min-h-0 w-full overflow-hidden px-4 sm:px-6 lg:px-8">
         <div className="grid h-full min-h-0 grid-cols-1 gap-6 py-6 md:grid-cols-12">
-          <aside className="hidden min-h-0 md:col-span-3 md:block md:overflow-y-auto scrollbar-hide lg:col-span-3">
+          <aside className="hidden min-h-0 md:col-span-3 md:block md:overflow-y-auto lg:col-span-3 scrollbar-hide">
             <Sidebar />
           </aside>
 
-          <section className="min-h-0 space-y-5 overflow-y-auto scrollbar-hide md:col-span-9 lg:col-span-6 lg:pb-6">
-            <div className="sticky top-0 z-40">
+          <section
+            ref={setScrollContainer}
+            className="min-h-0 overflow-y-auto pb-28 md:col-span-9 lg:col-span-6 lg:pb-6 scrollbar-hide"
+          >
+            <div className="sticky top-0 z-40 mb-4">
               <ExploreHeader />
             </div>
-
-            <div className="lg:hidden mt-10">
-              <TrendingTopicsWidget compact />
-            </div>
-
-            <PopularPostsSection posts={topPosts} />
-
-            <BrowseHashtagsSection />
-
-            <RecommendedCreatorsSection />
+            <ExploreFeed scrollRoot={scrollContainer} />
           </section>
 
           <aside className="hidden min-h-0 lg:col-span-3 lg:block lg:overflow-y-auto scrollbar-hide">
-            <div className="space-y-4">
-              <TrendingTopicsWidget />
-              <RecommendedCreatorsSection />
-            </div>
+            <FollowUsers />
           </aside>
         </div>
       </div>

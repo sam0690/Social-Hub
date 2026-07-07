@@ -1,53 +1,72 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import TopNav from "@/components/navigation/TopNav";
 import Sidebar from "@/components/sidebar/Sidebar";
 import BottomNav from "@/components/navigation/BottomNav";
-import ProfileContent from "@/components/profile/ProfileContent";
+import MyProfileContent from "@/components/profile/MyProfileContent";
 import type { Post } from "@/types/post";
-
-type User = { id: string; name: string; handle: string; verified?: boolean };
+import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { useRouter } from "next/navigation";
+import { useGetMyProfile } from "@/components/profile/hooks/useProfile";
 
 export default function ProfilePageClient({
-  user,
-  posts,
+  posts = [],
   likedIds = [],
   savedIds = [],
 }: {
-  user: User;
-  posts: Post[];
+  posts?: Post[];
   likedIds?: string[];
   savedIds?: string[];
 }) {
-  return (<>
- 
-    <motion.main
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.45 }}
-      className="min-h-screen bg-[#030313] text-white"
-    >
-      <TopNav />
+  const router = useRouter();
+  // const { data: currentUser, isLoading } = useCurrentUser();
+  const { data: user, isLoading } = useGetMyProfile();
 
-      <div className="w-full px-4 pb-28 sm:px-6 lg:px-8 lg:pb-6">
-        <div className="grid grid-cols-1 gap-6 py-6 md:grid-cols-12">
-          <aside className="hidden md:col-span-3 md:block lg:col-span-3">
-            <Sidebar />
-          </aside>
+  useEffect(() => {
+    if (!isLoading && !user) {
+      router.replace("/login");
+    }
+  }, [isLoading, user, router]);
 
-          <section className="md:col-span-9 lg:col-span-9">
-            <ProfileContent
-              user={user}
-              posts={posts}
-              likedIds={likedIds}
-              savedIds={savedIds}
-            />
-          </section>
-        </div>
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-slate-100 dark:bg-[#030313] text-slate-900 dark:text-white text-sm">
+        Loading...
       </div>
-    </motion.main>
+    );
+  }
+
+  if (!user) return null;
+
+  return (
+    <>
+      <motion.main
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.45 }}
+        className="min-h-screen bg-slate-100 dark:bg-[#030313] text-slate-900 dark:text-white"
+      >
+        <TopNav />
+
+        <div className="w-full px-4 pb-28 sm:px-6 lg:px-8 lg:pb-6">
+          <div className="grid grid-cols-1 gap-6 py-6 md:grid-cols-12">
+            <aside className="hidden md:col-span-3 md:block lg:col-span-3">
+              <Sidebar />
+            </aside>
+
+            <section className="md:col-span-9 lg:col-span-9">
+              <MyProfileContent
+                user={user}
+                posts={posts}
+                likedIds={likedIds}
+                savedIds={savedIds}
+              />
+            </section>
+          </div>
+        </div>
+      </motion.main>
       <BottomNav />
     </>
   );

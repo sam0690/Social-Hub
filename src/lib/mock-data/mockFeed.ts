@@ -9,7 +9,8 @@ export const posts = [
   {
     id: 'p1',
     userId: 'u1',
-    content: 'Exploring the new city skyline — love the colors at dusk. A quiet moment, a lot of perspective, and a little bit of motion to make it feel alive.',
+    postType: 'image',
+    content: 'Exploring the new city skyline — love the colors at dusk. A quiet moment, a lot of perspective, and a little bit of motion to make it feel alive. Exploring the new city skyline — love the colors at dusk. A quiet moment, a lot of perspective, and a little bit of motion to make it feel alive.',
     img: '/assets/posts/img1.jpg',
     likes: 24,
     comments: 8,
@@ -18,7 +19,8 @@ export const posts = [
   {
     id: 'p2',
     userId: 'u1',
-    content: 'Exploring the new city skyline — love the colors at dusk. A quiet moment, a lot of perspective, and a little bit of motion to make it feel alive.',
+    postType: 'text',
+    content: 'Exploring the new city skyline — love the colors at dusk. A quiet moment, a lot of perspective, and a little bit of motion to make it feel alive. Exploring the new city skyline — love the colors at dusk. A quiet moment, a lot of perspective, and a little bit of motion to make it feel alive.',
     img: '/assets/posts/img2.jpg',
     likes: 24,
     comments: 8,
@@ -27,6 +29,7 @@ export const posts = [
   {
     id: 'p3',
     userId: 'u1',
+    postType: 'image',
     content: 'Exploring the new city skyline — love the colors at dusk. A quiet moment, a lot of perspective, and a little bit of motion to make it feel alive.',
     img: '/assets/posts/img3.jpg',
     likes: 24,
@@ -36,6 +39,7 @@ export const posts = [
   {
     id: 'p4',
     userId: 'u1',
+    postType: 'image',
     content: 'Exploring the new city skyline — love the colors at dusk. A quiet moment, a lot of perspective, and a little bit of motion to make it feel alive.',
     img: '/assets/posts/img4.jpg',
     likes: 24,
@@ -45,6 +49,7 @@ export const posts = [
   {
     id: 'p5',
     userId: 'u1',
+    postType: 'image',
     content: 'Exploring the new city skyline — love the colors at dusk. A quiet moment, a lot of perspective, and a little bit of motion to make it feel alive.',
     img: '/assets/posts/img5.jpg',
     likes: 24,
@@ -55,6 +60,7 @@ export const posts = [
   {
     id: 'p8',
     userId: 'u2',
+    postType: 'image',
     content: "Quick thoughts on building better social UI: clarity > complexity.",
     img: '/assets/posts/img2.jpg',
     likes: 46,
@@ -64,6 +70,7 @@ export const posts = [
   {
     id: 'p9',
     userId: 'u2',
+    postType: 'text',
     content: "Working on an exciting new project. Stay tuned for updates!",
     img: '/assets/posts/img3.jpg',
     likes: 32,
@@ -73,6 +80,7 @@ export const posts = [
   {
     id: 'p10',
     userId: 'u2',
+    postType: 'image',
     content: "Love this new design direction.",
     img: '/assets/posts/img5.jpg',
     likes: 18,
@@ -83,6 +91,7 @@ export const posts = [
   {
     id: 'p11',
     userId: 'u3',
+    postType: 'image',
     content: 'Designing with motion feels like sculpting time. When the UI breathes, the product feels more human.',
     img: '/assets/posts/img1.jpg',
     likes: 12,
@@ -92,6 +101,7 @@ export const posts = [
   {
     id: 'p12',
     userId: 'u3',
+    postType: 'image',
     content: 'Just launched my new portfolio. Check it out and let me know what you think!',
     img: '/assets/posts/img4.jpg',
     likes: 55,
@@ -101,6 +111,7 @@ export const posts = [
   {
     id: 'p13',
     userId: 'u3',
+    postType: 'image',
     content: 'Inspired by nature today.',
     img: '/assets/posts/img2.jpg',
     likes: 28,

@@ -4,9 +4,28 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import Avatar from "@/components/ui/avatar";
 import { BarChart3, Film, Image, Smile, Paperclip } from "lucide-react";
+import { useCreatePost } from "@/hooks/useCreatePostModal";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function Composer() {
   const [text, setText] = useState("");
+  const queryClient = useQueryClient();
+  const { mutate: createPost, isPending } = useCreatePost();
+
+  const handlePost = () => {
+    if (!text.trim() || isPending) return;
+
+    createPost(
+      { content: text, visibility: "PUBLIC" },
+      {
+        onSuccess: () => {
+          setText(""); // Clear the input
+          // Refresh the home feed so the new post appears!
+          queryClient.invalidateQueries({ queryKey: ["home-feed"] });
+        },
+      }
+    );
+  };
 
   return (
     <motion.div
@@ -48,8 +67,12 @@ export default function Composer() {
                 <div className="rounded-full border border-black/20 dark:border-white/8 bg-black/5 dark:bg-white/5 px-3 py-1.5 text-xs text-zinc-600 dark:text-zinc-300">
                   {text.length}/280
                 </div>
-                <button className="rounded-xl bg-linear-to-r from-indigo-500 via-blue-500 to-fuchsia-500 px-4 py-2.5 font-semibold text-white shadow-lg shadow-fuchsia-500/15 transition hover:scale-[1.01] hover:shadow-fuchsia-500/25">
-                  Post
+                <button 
+                  onClick={handlePost}
+                  disabled={isPending || !text.trim()}
+                  className="rounded-xl bg-linear-to-r from-indigo-500 via-blue-500 to-fuchsia-500 px-4 py-2.5 font-semibold text-white shadow-lg shadow-fuchsia-500/15 transition hover:scale-[1.01] hover:shadow-fuchsia-500/25 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isPending ? "Posting..." : "Post"}
                 </button>
               </div>
             </div>

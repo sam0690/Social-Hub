@@ -1,35 +1,33 @@
 "use client";
-
-import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import Composer from "@/components/feed/Composer";
 import Stories from "@/components/feed/Stories";
 import PostCard from "@/components/feed/PostCard";
 import SkeletonPost from "@/components/feed/SkeletonPost";
-import { posts as mockPosts, users as mockUsers } from "@/lib/mock-data/mockFeed";
+import { useGetHomeFeed } from "@/hooks/useFeed";
+import { Post } from "@/types/post";
+import { useEffect } from "react";
+import { useInView } from "react-intersection-observer";
 
-export default function Feed() {
-  const [posts, setPosts] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const pageRef = useRef(1);
+type FeedProps = {
+  scrollRoot: HTMLElement | null;
+};
+
+export default function Feed({ scrollRoot }: FeedProps) {
+  const { data, isLoading, error, fetchNextPage, hasNextPage, isFetchingNextPage } = useGetHomeFeed();
+  const myFeed = data?.pages.flatMap(page => page.data) ?? [];
+  const { ref, inView } = useInView({
+    root: scrollRoot,
+    rootMargin: "0px 0px 500px 0px",
+    threshold: 0,
+  });
+
 
   useEffect(() => {
-    // simulate loading
-    setTimeout(() => {
-      setPosts(mockPosts);
-      setLoading(false);
-    }, 700);
-  }, []);
-
-  function loadMore() {
-    setLoading(true);
-    pageRef.current += 1;
-    setTimeout(() => {
-      // append same posts for demo
-      setPosts((p) => [...p, ...mockPosts]);
-      setLoading(false);
-    }, 900);
-  }
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, fetchNextPage, isFetchingNextPage]);
 
   return (
     <div>
@@ -37,23 +35,25 @@ export default function Feed() {
       <Stories />
 
       <motion.div initial="hidden" animate="show" variants={{ show: { transition: { staggerChildren: 0.08 } } }}>
-        {loading && (
+        {isLoading && (
           <>
             <SkeletonPost />
             <SkeletonPost />
             <SkeletonPost />
           </>
         )}
-
-        {!loading && posts.map((p, i) => {
-          const user = mockUsers.find((u) => u.id === p.userId) || { name: 'Unknown', handle: 'unknown' };
-          return <PostCard key={`${p.id}-${i}`} post={p} user={user} />;
-        })}
+        {error && <p className="text-center text-red-500">Oops! Something Went Wrong</p>}
+        {!isLoading && myFeed?.map((p: Post) => (
+          <PostCard key={p.id} post={p} />
+        ))}
+        {/* Invisible element at the bottom to trigger intersection observer */}
+        <div ref={ref} className="h-10 w-full" />
+        {isFetchingNextPage && (
+          <div className="py-4">
+            <SkeletonPost />
+          </div>
+        )}
       </motion.div>
-
-      <div className="flex justify-center mt-4">
-        <button onClick={loadMore} className="px-4 py-2 rounded-xl text-slate-900 dark:text-white bg-white dark:bg-white/5 border border-slate-400 dark:border-white/6">Load more</button>
-      </div>
     </div>
   );
 }

@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import EnhancedButton from '@/components/ui/enhanced-button'
 import { Menu, X } from 'lucide-react'
-import { ModeToggle } from '../modeToggle/modeToggle'
+import { ModeToggle } from '../features/modeToggle'
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)

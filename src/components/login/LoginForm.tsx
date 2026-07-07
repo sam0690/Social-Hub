@@ -27,7 +27,9 @@ export default function LoginForm() {
     loginMutation.mutate(
       { email, password },
       {
-        onSuccess: () => {
+        onSuccess: (data) => {
+          localStorage.setItem("accessToken", data.accessToken);
+          localStorage.setItem("refreshToken", data.refreshToken);
           toast.success("Welcome back to Social Hub.");
           router.push("/feed");
         },
